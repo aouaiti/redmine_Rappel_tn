@@ -1,0 +1,286 @@
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'redmine_budget_tn', plugin: 'redmine_budget_tn' %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <%= javascript_include_tag 'budget_charts', plugin: 'redmine_budget_tn' %>
+<% end %>
+
+<h2>Budgets</h2>
+
+<div class="contextual">
+  <% if User.current.allowed_to?(:manage_budgets, @project) %>
+    <%= link_to 'New Budget', new_project_budget_path(@project), class: 'icon icon-add' %>
+  <% end %>
+</div>
+
+<div class="budget-summary">
+  <h3>Project Budget Summary</h3>
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <div class="box">
+        <h3><%= l(:label_budget_summary) %></h3>
+        <p>
+          <strong>Total Budget:</strong> <%= number_to_currency(@project.total_budget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') rescue '0,00 TND' %><br>
+          <strong>Total Spent:</strong> <%= number_to_currency(@project.total_spent, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') rescue '0,00 TND' %><br>
+          <strong>Remaining:</strong> <%= number_to_currency(@project.remaining_budget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') rescue '0,00 TND' %>
+        </p>
+        
+        <div class="budget-chart-container">
+          <canvas id="projectSpentChart" width="300" height="200"></canvas>
+        </div>
+      </div>
+      
+      <div class="box" style="margin-top: 20px;">
+        <h3><%= l(:label_budget_distribution) %></h3>
+        <div class="budget-chart-container">
+          <canvas id="projectBudgetChart" width="300" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="splitcontentright box">
+      <h3><%= l(:label_budget_distribution) %></h3>
+      <table class="list">
+        <thead>
+          <tr>
+            <th><%= l(:field_name) %></th>
+            <th><%= l(:field_budget_amount) %></th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% totalBudget = @project.total_budget || 0 %>
+          <% @budgets.each_with_index do |budget, index| %>
+            <tr class="<%= cycle('odd', 'even') %>">
+              <td>
+                <div style="display: flex; align-items: center;">
+                  <% 
+                    colors = ['#5cb85c', '#428bca', '#f0ad4e', '#d9534f', '#5bc0de', 
+                             '#9370db', '#20b2aa', '#ff7f50', '#3cb371', '#ba55d3']
+                    colorIndex = index % colors.length
+                    color = colors[colorIndex] 
+                  %>
+                  <div style="width: 15px; height: 15px; background-color: <%= color %>; margin-right: 5px;"></div>
+                  <%= link_to budget.name, project_budget_path(@project, budget) %>
+                </div>
+              </td>
+              <td><%= number_to_currency(budget.amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+              <td>
+                <% if totalBudget > 0 %>
+                  <%= ((budget.amount / totalBudget) * 100).round(1) %>%
+                <% else %>
+                  0%
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          
+          <% 
+            # Calculate unallocated budget
+            allocatedBudget = @budgets.sum(&:amount)
+            unallocatedBudget = [totalBudget - allocatedBudget, 0].max
+            if unallocatedBudget > 0 
+          %>
+            <tr class="<%= cycle('odd', 'even') %>">
+              <td>
+                <div style="display: flex; align-items: center;">
+                  <div style="width: 15px; height: 15px; background-color: #777777; margin-right: 5px;"></div>
+                  <%= l(:label_unallocated_budget) %>
+                </div>
+              </td>
+              <td><%= number_to_currency(unallocatedBudget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+              <td>
+                <% if totalBudget > 0 %>
+                  <%= ((unallocatedBudget / totalBudget) * 100).round(1) %>%
+                <% else %>
+                  0%
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          
+          <tr class="total">
+            <td><strong><%= l(:label_total) %></strong></td>
+            <td><strong><%= number_to_currency(totalBudget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></strong></td>
+            <td><strong>100%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<% if @budgets.any? %>
+  <div class="autoscroll">
+    <table class="list budgets">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Amount</th>
+          <th>Spent</th>
+          <th>Remaining</th>
+          <th>% Spent</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @budgets.each do |budget| %>
+          <tr class="<%= cycle('odd', 'even') %> <%= 'overspent' if budget.percentage_spent > 100 rescue false %>">
+            <td><%= link_to budget.name, project_budget_path(@project, budget) %></td>
+            <td><%= format_date(budget.start_date) %></td>
+            <td><%= format_date(budget.end_date) if budget.end_date %></td>
+            <td><%= number_to_currency(budget.amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= number_to_currency(budget.spent_amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= number_to_currency(budget.remaining_amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= budget.percentage_spent %>%</td>
+            <td class="buttons">
+              <% if User.current.allowed_to?(:manage_budgets, @project) %>
+                <%= link_to 'Edit', edit_project_budget_path(@project, budget), class: 'icon icon-edit' %>
+                <%= link_to 'Delete', project_budget_path(@project, budget), 
+                          method: :delete, 
+                          data: { confirm: 'Are you sure you want to delete this budget?' }, 
+                          class: 'icon icon-del' %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="nodata">No budgets found. <%= link_to 'Create one', new_project_budget_path(@project) if User.current.allowed_to?(:manage_budgets, @project) %></p>
+<% end %>
+
+<% content_for :sidebar do %>
+  <h3>Reports</h3>
+  <ul>
+    <li><%= link_to 'Budget Reports', project_budget_reports_path(@project), class: 'icon icon-report' %></li>
+  </ul>
+<% end %>
+
+<%= javascript_tag do %>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Define colors here for both charts
+    var chartColors = [
+      '#5cb85c', // Green
+      '#428bca', // Blue
+      '#f0ad4e', // Orange
+      '#d9534f', // Red
+      '#5bc0de', // Light Blue
+      '#9370db', // Medium Purple
+      '#20b2aa', // Light Sea Green
+      '#ff7f50', // Coral
+      '#3cb371', // Medium Sea Green
+      '#ba55d3'  // Medium Orchid
+    ];
+    
+    // Budget Spent vs Remaining Chart
+    var ctxSpent = document.getElementById('projectSpentChart').getContext('2d');
+    var totalBudget = <%= @project.total_budget || 0 %>;
+    var totalSpent = <%= @project.total_spent || 0 %>;
+    var totalRemaining = <%= @project.remaining_budget || 0 %>;
+    
+    new Chart(ctxSpent, {
+      type: 'pie',
+      data: {
+        labels: ["<%= j(l(:label_chart_spent)) %>", "<%= j(l(:label_chart_remaining)) %>"],
+        datasets: [{
+          data: [totalSpent, Math.max(0, totalRemaining)],
+          backgroundColor: [
+            totalRemaining < 0 ? '#d9534f' : '#5cb85c', // Red if overspent, green otherwise
+            '#428bca' // Blue for remaining
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          position: 'right',
+          labels: {
+            boxWidth: 20,
+            fontSize: 12
+          }
+        },
+        tooltips: {
+          callbacks: {
+            label: function(tooltipItem, data) {
+              const dataset = data.datasets[tooltipItem.datasetIndex];
+              const total = dataset.data.reduce(function(acc, val) { return acc + val; }, 0);
+              const currentValue = dataset.data[tooltipItem.index];
+              const percentage = Math.round(currentValue / total * 100);
+              
+              return data.labels[tooltipItem.index] + ': ' + currentValue + ' TND (' + percentage + '%)';
+            }
+          }
+        }
+      }
+    });
+    
+    // Budget Distribution Chart
+    var ctxBudget = document.getElementById('projectBudgetChart').getContext('2d');
+    
+    // Prepare data for chart.js - each budget gets its own slice
+    var labels = [];
+    var values = [];
+    var backgroundColors = [];
+    
+    <% @budgets.each_with_index do |budget, index| %>
+      labels.push("<%= j(budget.name) %>");
+      values.push(<%= budget.amount %>);
+      backgroundColors.push(chartColors[<%= index %> % chartColors.length]);
+    <% end %>
+    
+    // Check if there's unallocated budget and add a slice for it
+    var allocatedBudget = 0;
+    <% @budgets.each do |budget| %>
+      allocatedBudget += <%= budget.amount %>;
+    <% end %>
+    
+    var unallocatedBudget = Math.max(0, totalBudget - allocatedBudget);
+    if (unallocatedBudget > 0) {
+      labels.push("<%= j(l(:label_unallocated_budget)) %>");
+      values.push(unallocatedBudget);
+      backgroundColors.push("#777777"); // Gray color for unallocated budget
+    }
+    
+    new Chart(ctxBudget, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: backgroundColors,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          position: 'right',
+          labels: {
+            boxWidth: 20,
+            fontSize: 12
+          }
+        },
+        tooltips: {
+          callbacks: {
+            label: function(tooltipItem, data) {
+              const dataset = data.datasets[tooltipItem.datasetIndex];
+              const total = dataset.data.reduce(function(acc, val) { return acc + val; }, 0);
+              const currentValue = dataset.data[tooltipItem.index];
+              const percentage = Math.round(currentValue / total * 100);
+              
+              return data.labels[tooltipItem.index] + ': ' + currentValue + ' TND (' + percentage + '%)';
+            }
+          }
+        }
+      }
+    });
+  });
+<% end %>
+
+<% html_title "Budgets" %> 

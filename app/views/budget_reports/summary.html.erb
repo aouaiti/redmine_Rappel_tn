@@ -1,0 +1,202 @@
+<% html_title "Budget Summary" %>
+
+<div class="contextual">
+  <%= link_to 'Back to Reports', project_budget_reports_path(@project), class: 'icon icon-cancel' %>
+  <%= link_to 'Export CSV', export_project_budget_reports_path(@project, format: :csv), class: 'icon icon-export' %>
+</div>
+
+<h2>Budget Summary Report</h2>
+
+<div class="splitcontent">
+  <div class="splitcontentleft">
+    <div class="box">
+      <p>
+        <strong>Total Project Budget:</strong> <%= number_to_currency(@project.total_budget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %><br>
+        <strong>Total Spent:</strong> <%= number_to_currency(@project.total_spent, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %><br>
+        <strong>Remaining:</strong> <%= number_to_currency(@project.remaining_budget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %>
+      </p>
+
+      <% if @project.total_budget > 0 %>
+        <div class="progress" style="margin-top: 10px; width: 100%;">
+          <% percent = [(@project.total_spent / @project.total_budget * 100).round, 100].min rescue 0 %>
+          <div class="progress-bar" style="width: <%= percent %>%; background-color: <%= percent > 100 ? '#d9534f' : '#5cb85c' %>"></div>
+        </div>
+        <div style="text-align: center;"><%= percent %>% Used</div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="splitcontentright">
+    <div class="box">
+      <h3><%= l(:label_budget_summary) %></h3>
+      <div style="height: 250px;">
+        <canvas id="projectSummaryChart" width="300" height="250"></canvas>
+      </div>
+    </div>
+    
+    <% if @project.budgets.any? %>
+    <div class="box" style="margin-top: 20px;">
+      <h3><%= l(:label_budget_distribution) %></h3>
+      <table class="list">
+        <% totalBudget = @project.total_budget || 0 %>
+        <% @project.budgets.each_with_index do |budget, index| %>
+          <tr class="<%= cycle('odd', 'even') %>">
+            <td>
+              <div style="display: flex; align-items: center;">
+                <% colorIndex = index % 10 %>
+                <% 
+                  colors = ['#5cb85c', '#428bca', '#f0ad4e', '#d9534f', '#5bc0de', 
+                            '#9370db', '#20b2aa', '#ff7f50', '#3cb371', '#ba55d3']
+                  color = colors[colorIndex] 
+                %>
+                <div style="width: 15px; height: 15px; background-color: <%= color %>; margin-right: 5px;"></div>
+                <%= budget.name %>
+              </div>
+            </td>
+            <td><%= number_to_currency(budget.amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td>
+              <% if totalBudget > 0 %>
+                <%= ((budget.amount / totalBudget) * 100).round(1) %>%
+              <% else %>
+                0%
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% 
+          allocatedBudget = @project.budgets.sum(&:amount)
+          unallocatedBudget = [totalBudget - allocatedBudget, 0].max
+          if unallocatedBudget > 0 
+        %>
+          <tr class="<%= cycle('odd', 'even') %>">
+            <td>
+              <div style="display: flex; align-items: center;">
+                <div style="width: 15px; height: 15px; background-color: #777777; margin-right: 5px;"></div>
+                <%= l(:label_unallocated_budget) %>
+              </div>
+            </td>
+            <td><%= number_to_currency(unallocatedBudget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td>
+              <% if totalBudget > 0 %>
+                <%= ((unallocatedBudget / totalBudget) * 100).round(1) %>%
+              <% else %>
+                0%
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+<h3>Budgets</h3>
+
+<% if @project.budgets.any? %>
+  <div class="autoscroll">
+    <table class="list budgets">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Amount</th>
+          <th>Spent</th>
+          <th>Remaining</th>
+          <th>% Spent</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @project.budgets.each do |budget| %>
+          <tr class="<%= cycle('odd', 'even') %>">
+            <td><%= link_to budget.name, project_budget_path(@project, budget) %></td>
+            <td><%= format_date(budget.start_date) %></td>
+            <td><%= format_date(budget.end_date) if budget.end_date %></td>
+            <td><%= number_to_currency(budget.amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= number_to_currency(budget.spent_amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= number_to_currency(budget.remaining_amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= budget.percentage_spent %>%</td>
+            <td>
+              <%= link_to 'Details', details_project_budget_reports_path(@project, budget_id: budget.id), class: 'icon icon-magnifier' %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="nodata">No budgets found.</p>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'redmine_budget_tn', plugin: 'redmine_budget_tn' %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <%= javascript_include_tag 'budget_charts', plugin: 'redmine_budget_tn' %>
+  
+  <% if @project.budgets.any? %>
+    <%= javascript_tag do %>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Define colors for the chart
+        var chartColors = [
+          '#5cb85c', // Green - for remaining
+          '#428bca', // Blue - for spent
+          '#f0ad4e', // Orange
+          '#d9534f', // Red
+          '#5bc0de', // Light Blue
+          '#9370db', // Medium Purple
+          '#20b2aa', // Light Sea Green
+          '#ff7f50', // Coral
+          '#3cb371', // Medium Sea Green
+          '#ba55d3'  // Medium Orchid
+        ];
+        
+        // Setup chart data
+        var ctx = document.getElementById('projectSummaryChart').getContext('2d');
+        var totalBudget = <%= @project.total_budget || 0 %>;
+        var totalSpent = <%= @project.total_spent || 0 %>;
+        var totalRemaining = <%= @project.remaining_budget || 0 %>;
+        
+        // Create "Spent vs Remaining" pie chart
+        new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: ["<%= j(l(:label_chart_spent)) %>", "<%= j(l(:label_chart_remaining)) %>"],
+            datasets: [{
+              data: [totalSpent, Math.max(0, totalRemaining)],
+              backgroundColor: [
+                totalRemaining < 0 ? '#d9534f' : '#428bca', // Red if overspent, blue otherwise
+                '#5cb85c' // Green for remaining
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: 'right',
+              labels: {
+                boxWidth: 20,
+                fontSize: 12
+              }
+            },
+            tooltips: {
+              callbacks: {
+                label: function(tooltipItem, data) {
+                  const dataset = data.datasets[tooltipItem.datasetIndex];
+                  const total = dataset.data.reduce(function(acc, val) { return acc + val; }, 0);
+                  const currentValue = dataset.data[tooltipItem.index];
+                  const percentage = Math.round(currentValue / total * 100);
+                  
+                  return data.labels[tooltipItem.index] + ': ' + currentValue + ' TND (' + percentage + '%)';
+                }
+              }
+            }
+          }
+        });
+      });
+    <% end %>
+  <% end %>
+<% end %> 

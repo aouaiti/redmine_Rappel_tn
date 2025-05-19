@@ -1,0 +1,16 @@
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'redmine_budget_tn', plugin: 'redmine_budget_tn' %>
+<% end %>
+
+<h2>Edit Budget: <%= @budget.name %></h2>
+
+<%= form_tag project_budget_path(@project, @budget), method: :put do %>
+  <%= render 'form', budget: @budget %>
+  
+  <p>
+    <%= submit_tag 'Save Budget', name: nil %>
+    <%= link_to 'Cancel', project_budget_path(@project, @budget) %>
+  </p>
+<% end %>
+
+<% html_title "Edit Budget: #{@budget.name}" %> 

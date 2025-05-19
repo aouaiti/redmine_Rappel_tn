@@ -1,0 +1,99 @@
+en:
+  # Plugin labels
+  label_budget: "Budget"
+  label_budget_plural: "Budgets"
+  label_budget_new: "New budget"
+  label_budget_edit: "Edit budget"
+  label_budget_delete: "Delete budget"
+  label_budget_item_new: "New budget item"
+  label_budget_item_edit: "Edit budget item"
+  label_budget_item_delete: "Delete budget item"
+  label_budget_category_new: "New budget category"
+  label_budget_category_edit: "Edit budget category"
+  label_budget_category_delete: "Delete budget category"
+  label_budget_reports: "Budget Reports"
+  
+  # Budget fields
+  field_budget: "Budget"
+  field_budget_amount: "Amount"
+  field_budget_spent: "Spent"
+  field_budget_remaining: "Remaining"
+  field_budget_percentage: "Percentage spent"
+  field_budget_start_date: "Start date"
+  field_budget_end_date: "End date"
+  field_budget_item_type: "Item type"
+  field_budget_category: "Category"
+  field_budget_hours: "Hours"
+  
+  # Budget types
+  label_budget_type_labor: "Labor"
+  label_budget_type_material: "Material"
+  label_budget_type_fixed_cost: "Fixed cost"
+  label_budget_type_expense: "Expense"
+  label_budget_type_contractor: "Contractor"
+  label_budget_type_other: "Other"
+  
+  # Budget sections
+  label_budget_details: "Budget details"
+  label_budget_items: "Budget items"
+  label_budget_categories: "Categories"
+  label_budget_summary: "Budget summary"
+  label_budget_distribution: "Budget distribution"
+  label_budget_history: "History"
+  label_budget_reports: "Reports"
+  
+  # Budget summaries
+  label_total_budget: "Total budget"
+  label_total_spent: "Total spent"
+  label_total_remaining: "Total remaining"
+  label_spent_amount: "Spent amount"
+  label_remaining_budget: "Remaining budget"
+  label_unallocated_budget: "Unallocated budget"
+  label_percentage_spent: "% spent"
+  label_overspent: "Overspent"
+  label_total: "Total"
+  
+  # Budget statuses
+  label_budget_status_active: "Active"
+  label_budget_status_completed: "Completed"
+  label_budget_status_overspent: "Overspent"
+  
+  # Settings
+  label_budget_settings: "Budget settings"
+  label_default_currency: "Default currency"
+  label_currency_format: "Currency format"
+  label_currency_separator: "Decimal separator"
+  label_currency_delimiter: "Thousands separator"
+  label_hourly_rate: "Default hourly rate"
+  
+  # Cost rates
+  label_cost_rate: "Cost rate"
+  label_cost_rate_plural: "Cost rates"
+  label_cost_rate_new: "New cost rate"
+  label_cost_rate_edit: "Edit cost rate"
+  label_cost_rate_delete: "Delete cost rate"
+  field_rate: "Rate"
+  field_valid_from: "Valid from"
+  field_valid_to: "Valid to"
+  field_is_default: "Default"
+  
+  # Reports
+  label_budget_report_overview: "Budget overview"
+  label_budget_report_details: "Budget details"
+  label_budget_report_time: "Time report"
+  label_budget_report_issues: "Issues report"
+  label_budget_report_export: "Export report"
+  
+  # Chart labels
+  label_chart_spent: "Spent"
+  label_chart_remaining: "Remaining"
+  
+  # Messages
+  notice_budget_created: "Budget was successfully created."
+  notice_budget_updated: "Budget was successfully updated."
+  notice_budget_deleted: "Budget was successfully deleted."
+  notice_budget_item_created: "Budget item was successfully created."
+  notice_budget_item_updated: "Budget item was successfully updated."
+  notice_budget_item_deleted: "Budget item was successfully deleted."
+  error_budget_not_deleted: "Budget could not be deleted."
+  error_budget_item_not_deleted: "Budget item could not be deleted." 

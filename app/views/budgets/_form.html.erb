@@ -1,0 +1,30 @@
+<%= error_messages_for budget %>
+
+<div class="box tabular">
+  <p>
+    <label for="budget_name">Name<span class="required">*</span>:</label>
+    <%= text_field_tag 'budget[name]', budget.name, required: true, size: 60 %>
+  </p>
+  
+  <p>
+    <label for="budget_description">Description:</label>
+    <%= text_area_tag 'budget[description]', budget.description, rows: 5, cols: 60 %>
+  </p>
+  
+  <p>
+    <label for="budget_amount">Amount<span class="required">*</span>:</label>
+    <%= text_field_tag 'budget[amount]', budget.amount, required: true, size: 10 %>
+    <span class="currency">TND</span>
+  </p>
+  
+  <p>
+    <label for="budget_start_date">Start date<span class="required">*</span>:</label>
+    <%= text_field_tag 'budget[start_date]', budget.start_date, required: true, size: 10, class: 'date_picker' %>
+  </p>
+  
+  <p>
+    <label for="budget_end_date">End date:</label>
+    <%= text_field_tag 'budget[end_date]', budget.end_date, size: 10, class: 'date_picker' %>
+    <em>(optional)</em>
+  </p>
+</div> 

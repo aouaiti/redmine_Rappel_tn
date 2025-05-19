@@ -1,0 +1,32 @@
+<p>
+  <label>Default Currency:</label>
+  <%= select_tag 'settings[default_currency]', 
+      options_for_select([['TND', 'TND'], ['EUR', 'EUR'], ['USD', 'USD']], @settings['default_currency']), 
+      class: 'select' %>
+</p>
+
+<p>
+  <label>Currency Format:</label>
+  <%= select_tag 'settings[currency_format]', 
+      options_for_select([['1234,56 TND', '%n %u'], ['TND 1234,56', '%u %n']], @settings['currency_format']), 
+      class: 'select' %>
+</p>
+
+<p>
+  <label>Currency Decimal Separator:</label>
+  <%= select_tag 'settings[currency_separator]', 
+      options_for_select([[',', ','], ['.', '.']], @settings['currency_separator']),
+      class: 'select' %>
+</p>
+
+<p>
+  <label>Currency Thousands Delimiter:</label>
+  <%= select_tag 'settings[currency_delimiter]', 
+      options_for_select([[' ', ' '], [',', ','], ['.', '.'], ['', '']], @settings['currency_delimiter']),
+      class: 'select' %>
+</p>
+
+<p>
+  <label>Default Hourly Rate (TND):</label>
+  <%= text_field_tag 'settings[hourly_rate]', @settings['hourly_rate'], size: 5 %>
+</p> 

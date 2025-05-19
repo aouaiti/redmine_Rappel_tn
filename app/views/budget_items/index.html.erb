@@ -1,0 +1,52 @@
+<% html_title "Budget Items" %>
+
+<h2>Budget Items</h2>
+
+<div class="autoscroll">
+  <% if @items && @items.any? %>
+    <table class="list budget-items">
+      <thead>
+        <tr>
+          <th>Budget</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Issue</th>
+          <th>Amount</th>
+          <th>Hours</th>
+          <th>Type</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @items.each do |item| %>
+          <tr class="<%= cycle('odd', 'even') %>">
+            <td><%= link_to item.budget.name, project_budget_path(@project, item.budget) if item.budget %></td>
+            <td><%= item.name %></td>
+            <td><%= item.budget_category ? item.budget_category.name : '-' %></td>
+            <td><%= link_to_issue(item.issue) if item.issue %></td>
+            <td><%= number_to_currency(item.amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= item.hours %></td>
+            <td><%= item.item_type %></td>
+            <td class="buttons">
+              <% if User.current.allowed_to?(:manage_budgets, @project) %>
+                <%= link_to 'Edit', edit_project_budget_item_path(@project, item), class: 'icon icon-edit' %>
+                <%= link_to 'Delete', project_budget_item_path(@project, item), 
+                          method: :delete, 
+                          data: { confirm: 'Are you sure you want to delete this budget item?' }, 
+                          class: 'icon icon-del' %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="nodata">No budget items found.</p>
+  <% end %>
+</div>
+
+<% if User.current.allowed_to?(:manage_budgets, @project) %>
+  <p>
+    <%= link_to 'New Budget Item', new_project_budget_item_path(@project), class: 'icon icon-add' %>
+  </p>
+<% end %> 

@@ -1,0 +1,89 @@
+<h2>Budget Reports</h2>
+
+<div class="contextual">
+  <%= link_to 'Export CSV', export_project_budget_reports_path(@project, format: :csv), class: 'icon icon-export' %>
+</div>
+
+<div class="splitcontent">
+  <div class="splitcontentleft">
+    <h3>Budget Overview</h3>
+    <div class="box">
+      <p>
+        <strong>Total Budget:</strong> <%= number_to_currency(@total_budget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') rescue '0,00 TND' %><br>
+        <strong>Total Spent:</strong> <%= number_to_currency(@total_spent, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') rescue '0,00 TND' %><br>
+        <strong>Remaining:</strong> <%= number_to_currency(@remaining_budget, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') rescue '0,00 TND' %>
+      </p>
+      
+      <% if @remaining_budget && @total_budget && @total_budget > 0 %>
+      <div class="progress" style="margin-top: 10px; width: 100%;">
+        <% percent = [(@total_spent / @total_budget * 100).round, 100].min rescue 0 %>
+        <div class="progress-bar" style="width: <%= percent %>%; background-color: <%= percent > 100 ? '#d9534f' : '#5cb85c' %>"></div>
+      </div>
+      <div style="text-align: center;"><%= percent %>% Used</div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="splitcontentright">
+    <h3>Report Filter</h3>
+    <div class="box">
+      <%= form_tag project_budget_reports_path(@project), method: :get do %>
+        <p>
+          <label for="start_date">From:</label>
+          <%= text_field_tag 'start_date', @start_date, size: 10, class: 'date_picker' %>
+          
+          <label for="end_date">To:</label>
+          <%= text_field_tag 'end_date', @end_date, size: 10, class: 'date_picker' %>
+          
+          <%= submit_tag 'Apply', class: 'button-small' %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<h3>Budget Summary by Budget</h3>
+
+<% if @budgets.any? %>
+  <div class="autoscroll">
+    <table class="list budgets">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Amount</th>
+          <th>Spent</th>
+          <th>Remaining</th>
+          <th>% Spent</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @budgets.each do |budget| %>
+          <tr class="<%= cycle('odd', 'even') %>">
+            <td><%= link_to budget.name, details_project_budget_reports_path(@project, budget_id: budget.id) %></td>
+            <td><%= format_date(budget.start_date) %></td>
+            <td><%= format_date(budget.end_date) if budget.end_date %></td>
+            <td><%= number_to_currency(budget.amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= number_to_currency(budget.spent_amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= number_to_currency(budget.remaining_amount, unit: 'TND', format: '%n %u', delimiter: ' ', separator: ',') %></td>
+            <td><%= budget.percentage_spent %>%</td>
+            <td>
+              <%= link_to 'Details', details_project_budget_reports_path(@project, budget_id: budget.id), class: 'icon icon-magnifier' %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="nodata">No budgets found.</p>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'redmine_budget_tn', plugin: 'redmine_budget_tn' %>
+  <%= javascript_include_tag 'budget_charts', plugin: 'redmine_budget_tn' %>
+<% end %>
+
+<% html_title "Budget Reports" %> 

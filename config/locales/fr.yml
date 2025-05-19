@@ -1,0 +1,99 @@
+fr:
+  # Plugin labels
+  label_budget: "Budget"
+  label_budget_plural: "Budgets"
+  label_budget_new: "Nouveau budget"
+  label_budget_edit: "Modifier le budget"
+  label_budget_delete: "Supprimer le budget"
+  label_budget_item_new: "Nouvel élément budgétaire"
+  label_budget_item_edit: "Modifier l'élément budgétaire"
+  label_budget_item_delete: "Supprimer l'élément budgétaire"
+  label_budget_category_new: "Nouvelle catégorie de budget"
+  label_budget_category_edit: "Modifier la catégorie de budget"
+  label_budget_category_delete: "Supprimer la catégorie de budget"
+  label_budget_reports: "Rapports budgétaires"
+  
+  # Budget fields
+  field_budget: "Budget"
+  field_budget_amount: "Montant"
+  field_budget_spent: "Dépensé"
+  field_budget_remaining: "Restant"
+  field_budget_percentage: "Pourcentage dépensé"
+  field_budget_start_date: "Date de début"
+  field_budget_end_date: "Date de fin"
+  field_budget_item_type: "Type d'élément"
+  field_budget_category: "Catégorie"
+  field_budget_hours: "Heures"
+  
+  # Budget types
+  label_budget_type_labor: "Main d'œuvre"
+  label_budget_type_material: "Matériel"
+  label_budget_type_fixed_cost: "Coût fixe"
+  label_budget_type_expense: "Dépense"
+  label_budget_type_contractor: "Prestataire"
+  label_budget_type_other: "Autre"
+  
+  # Budget sections
+  label_budget_details: "Détails du budget"
+  label_budget_items: "Éléments budgétaires"
+  label_budget_categories: "Catégories"
+  label_budget_summary: "Résumé du budget"
+  label_budget_distribution: "Répartition du budget"
+  label_budget_history: "Historique"
+  label_budget_reports: "Rapports"
+  
+  # Budget summaries
+  label_total_budget: "Budget total"
+  label_total_spent: "Total dépensé"
+  label_total_remaining: "Total restant"
+  label_spent_amount: "Montant dépensé"
+  label_remaining_budget: "Budget restant"
+  label_unallocated_budget: "Budget non alloué"
+  label_percentage_spent: "% dépensé"
+  label_overspent: "Dépassement"
+  label_total: "Total"
+  
+  # Budget statuses
+  label_budget_status_active: "Actif"
+  label_budget_status_completed: "Terminé"
+  label_budget_status_overspent: "Dépassé"
+  
+  # Settings
+  label_budget_settings: "Paramètres du budget"
+  label_default_currency: "Devise par défaut"
+  label_currency_format: "Format de devise"
+  label_currency_separator: "Séparateur décimal"
+  label_currency_delimiter: "Séparateur de milliers"
+  label_hourly_rate: "Taux horaire par défaut"
+  
+  # Cost rates
+  label_cost_rate: "Taux de coût"
+  label_cost_rate_plural: "Taux de coûts"
+  label_cost_rate_new: "Nouveau taux de coût"
+  label_cost_rate_edit: "Modifier le taux de coût"
+  label_cost_rate_delete: "Supprimer le taux de coût"
+  field_rate: "Taux"
+  field_valid_from: "Valide depuis"
+  field_valid_to: "Valide jusqu'à"
+  field_is_default: "Par défaut"
+  
+  # Reports
+  label_budget_report_overview: "Aperçu budgétaire"
+  label_budget_report_details: "Détails budgétaires"
+  label_budget_report_time: "Rapport de temps"
+  label_budget_report_issues: "Rapport de tickets"
+  label_budget_report_export: "Exporter le rapport"
+  
+  # Chart labels
+  label_chart_spent: "Dépensé"
+  label_chart_remaining: "Restant"
+  
+  # Messages
+  notice_budget_created: "Budget créé avec succès."
+  notice_budget_updated: "Budget mis à jour avec succès."
+  notice_budget_deleted: "Budget supprimé avec succès."
+  notice_budget_item_created: "Élément budgétaire créé avec succès."
+  notice_budget_item_updated: "Élément budgétaire mis à jour avec succès."
+  notice_budget_item_deleted: "Élément budgétaire supprimé avec succès."
+  error_budget_not_deleted: "Le budget n'a pas pu être supprimé."
+  error_budget_item_not_deleted: "L'élément budgétaire n'a pas pu être supprimé." 

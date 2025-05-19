@@ -1,0 +1,26 @@
+<%= error_messages_for 'item' %>
+
+<div class="box tabular">
+  <p><%= f.select :budget_id, @budgets.collect{|b| [b.name, b.id]}, { required: true }, { class: 'required' } %></p>
+  
+  <p><%= f.text_field :name, required: true, size: 60 %></p>
+  
+  <p><%= f.text_area :description, cols: 60, rows: 3 %></p>
+  
+  <p><%= f.select :budget_category_id, 
+      @categories.collect {|c| [c.name, c.id]},
+      include_blank: true,
+      label: :field_category %></p>
+  
+  <p><%= f.select :issue_id, 
+      @project.issues.collect {|i| ["#{i.tracker} ##{i.id}: #{i.subject}", i.id]},
+      include_blank: true %></p>
+  
+  <p><%= f.text_field :amount, size: 10, required: true, step: '0.01' %></p>
+  
+  <p><%= f.text_field :hours, size: 10, step: '0.01' %></p>
+  
+  <p><%= f.select :item_type, 
+      BudgetItem::TYPES.collect {|t| [t.humanize, t]},
+      include_blank: true %></p>
+</div> 
