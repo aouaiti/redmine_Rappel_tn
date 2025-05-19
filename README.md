@@ -1,73 +1,72 @@
-# Suivi Budgétaire / Budget Tracking for Redmine
+# Redmine Budget TN Plugin
 
-Un plugin professionnel pour la gestion des budgets dans Redmine. Conçu spécifiquement pour le contexte tunisien, avec le dinar tunisien (TND) comme devise par défaut et une interface en français.
+A comprehensive budget management plugin for Redmine, with Tunisian Dinar (TND) support and French localization. This plugin allows project managers to create and manage budgets, track expenses, and generate detailed reports.
 
-## Fonctionnalités
+## Features
 
-- Gestion complète des budgets pour les projets Redmine
-- Suivi des coûts avec prise en charge de plusieurs types de dépenses
-- Création de budgets avec des éléments détaillés
-- Organisation des éléments budgétaires par catégories
-- Liaison des éléments budgétaires avec les demandes Redmine
-- Suivi automatique du temps passé et calcul des coûts
-- Rapports détaillés sur l'utilisation du budget
-- Exportation des données en CSV et Excel
-- Interface utilisateur moderne avec graphiques et visualisations
-- Entièrement traduit en français
-- Supporte le Dinar Tunisien (TND) par défaut
+- Create multiple budgets per project
+- Track budget expenses and remaining amounts
+- Assign budget items to categories and issues
+- Visual budget reporting with charts
+- TND currency support (Tunisian Dinar)
+- French localization
+- Compatible with Redmine 6.x and Rails 6.x
+- Comprehensive budget summary and detailed reports
+- CSV export functionality
+
+## Requirements
+
+- Redmine 6.x
+- Rate plugin (dependency)
 
 ## Installation
 
-1. Clonez ce dépôt dans le répertoire `plugins` de votre installation Redmine:
-   ```bash
-   cd /chemin/vers/redmine/plugins
-   git clone https://github.com/votre-compte/redmine_budget_tn.git
+1. Clone this repository into your Redmine plugins directory:
+   ```
+   cd {REDMINE_ROOT}/plugins
+   git clone https://github.com/YOUR-USERNAME/redmine_budget_tn.git
    ```
 
-2. Installez les dépendances si nécessaire:
-   ```bash
+2. Install required dependencies:
+   ```
    bundle install
    ```
 
-3. Exécutez les migrations de la base de données:
-   ```bash
-   rake redmine:plugins:migrate NAME=redmine_budget_tn RAILS_ENV=production
+3. Run the plugin migrations:
+   ```
+   bundle exec rake redmine:plugins:migrate RAILS_ENV=production
    ```
 
-4. Redémarrez votre serveur Redmine.
+4. Restart your Redmine application:
+   ```
+   touch tmp/restart.txt
+   ```
 
-5. Configurez les permissions pour les rôles dans Administration > Rôles et permissions.
+## Usage
 
-## Utilisation
+1. Enable the plugin in your project settings
+2. Navigate to the "Budgets" tab in your project
+3. Create a new budget by specifying name, amount, and date range
+4. Add budget items to track specific expenses 
+5. View budget reports to analyze spending patterns
 
-1. Activez le module "Budget" dans les paramètres de votre projet.
-2. Accédez à l'onglet "Budgets" dans votre projet.
-3. Créez un nouveau budget et ajoutez des éléments budgétaires.
-4. Suivez vos dépenses et visualisez les rapports.
+## Budget Reports
+
+The plugin provides two main types of reports:
+
+- **Summary Report**: Shows an overview of all project budgets including total amount, spent and remaining amounts
+- **Detailed Report**: Shows specific budget items, categories, and spending distribution for a selected budget
 
 ## Configuration
 
-Vous pouvez configurer le plugin dans Administration > Plugins > Suivi Budgétaire:
+- Project administrators can enable/disable budget features per project
+- Each budget can be configured with different start/end dates and categories
+- View permissions can be set through the Redmine roles and permissions system
 
-- Devise par défaut (TND par défaut)
-- Format d'affichage des montants
-- Taux horaire par défaut
-- Autres paramètres avancés
+## License
 
-## Compatibilité
+This plugin is released under the MIT License.
 
-- Redmine 4.2.0 ou supérieur
-- Ruby 2.5.0 ou supérieur
-- Base de données: MySQL/MariaDB, PostgreSQL, SQLite
+## Credits
 
-## Licence
-
-Ce plugin est publié sous licence MIT.
-
-## Auteur
-
-Développé par Claude pour répondre aux besoins spécifiques de suivi budgétaire dans le contexte tunisien.
-
-## Support
-
-Pour toute question ou demande de support, veuillez ouvrir une issue sur GitHub ou contacter l'auteur. 
+This plugin is based on the original Budget Plugin for Redmine, with enhancements for TND currency support, French localization, and Redmine 6 compatibility. 
