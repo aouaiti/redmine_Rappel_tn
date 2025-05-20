@@ -8,7 +8,7 @@ Redmine::Plugin.register :redmine_budget_tn do
   author 'Aouaiti'
   description 'Un plugin de gestion de budget professionnel pour Redmine'
   version '1.0.0'
-  url 'https://github.com/example/redmine_budget_tn'
+  url 'https://github.com/aouaiti/redmine_Budget_tn'
   
   requires_redmine version_or_higher: '4.2.0'
   
